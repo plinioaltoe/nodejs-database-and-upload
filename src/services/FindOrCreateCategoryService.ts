@@ -1,13 +1,14 @@
+import { getRepository } from 'typeorm';
 import Category from '../models/Category';
 
 class FindOrCreateCategoryService {
   public async execute(title: string): Promise<string> {
-    let category = await Category.findOne({ title });
+    const categoryRepository = getRepository(Category);
+    let category = await categoryRepository.findOne({ title });
 
     if (!category) {
-      category = new Category();
-      category.title = title;
-      await category.save();
+      category = categoryRepository.create({ title });
+      await categoryRepository.save(category);
     }
 
     return category.id;
